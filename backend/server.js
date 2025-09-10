@@ -9,23 +9,34 @@ const nodemailer = require("nodemailer");
 
 const User = require("./models/User");
 const News = require("./models/News");
+const postsRouter = require("./routes/posts"); // discussion forum routes
 
-// ✅ Load .env in local dev
 require("dotenv").config();
 
 const app = express();
+
+// =====================
+// Constants
+// =====================
+const CLIENT_URL = process.env.CLIENT_URL || "https://brain-dock-fron.onrender.com"; // frontend URL
+const PORT = process.env.PORT || 5000;
+
+// =====================
+// Middlewares
+// =====================
 app.use(express.json());
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-// ✅ CORS (allow frontend URL or * for testing)
-const CLIENT_URL = process.env.CLIENT_URL || "*";
+app.use(express.urlencoded({ extended: true }));
+app.use("/uploads", express.static(path.join(__dirname, "uploads"))); // serve images
+
+// CORS
 app.use(cors({
   origin: CLIENT_URL,
   credentials: true,
 }));
 
-/* =====================
-   DATABASE CONNECTION
-   ===================== */
+// =====================
+// Database Connection
+// =====================
 mongoose
   .connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
@@ -34,9 +45,9 @@ mongoose
   .then(() => console.log("✅ MongoDB connected successfully"))
   .catch((err) => console.error("❌ MongoDB connection error:", err));
 
-/* =====================
-   AUTH ROUTES
-   ===================== */
+// =====================
+// AUTH ROUTES
+// =====================
 app.post("/MindCare/login", async (req, res) => {
   const { name, username, password } = req.body;
   try {
@@ -66,14 +77,14 @@ app.post("/MindCare/login", async (req, res) => {
     );
     res.json({ msg: "Login successful", token });
   } catch (error) {
-    console.error("Error:", error);
+    console.error("❌ Error:", error);
     res.status(500).json({ msg: "Server error" });
   }
 });
 
-/* =====================
-   NEWS ROUTES
-   ===================== */
+// =====================
+// NEWS ROUTES
+// =====================
 app.get("/api/news", async (req, res) => {
   try {
     const { tags } = req.query;
@@ -108,29 +119,25 @@ app.post("/api/news/:id/like", async (req, res) => {
   }
 });
 
-/* =====================
-   POST ROUTES (Discussion Forum)
-   ===================== */
-const postsRouter = require("./routes/posts");
+// =====================
+// POSTS ROUTES (Discussion Forum)
+// =====================
 app.use("/api/posts", postsRouter);
 
-/* =====================
-   FEEDBACK ROUTE
-   ===================== */
+// =====================
+// FEEDBACK ROUTE
+// =====================
 app.post("/api/feedback", async (req, res) => {
   const { feedback } = req.body;
 
-  if (!feedback) {
-    return res.status(400).json({ msg: "Feedback cannot be empty" });
-  }
+  if (!feedback) return res.status(400).json({ msg: "Feedback cannot be empty" });
 
   try {
-    // Transporter setup for Gmail
     let transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: process.env.MAIL_USER,      // from env
-        pass: process.env.MAIL_PASS,      // from env (App Password)
+        user: process.env.MAIL_USER,
+        pass: process.env.MAIL_PASS, // App password recommended
       },
     });
 
@@ -142,7 +149,6 @@ app.post("/api/feedback", async (req, res) => {
     };
 
     await transporter.sendMail(mailOptions);
-
     res.json({ msg: "Feedback sent successfully!" });
   } catch (error) {
     console.error("❌ Error sending email:", error.message);
@@ -150,10 +156,7 @@ app.post("/api/feedback", async (req, res) => {
   }
 });
 
-/* =====================
-   SERVER START
-   ===================== */
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () =>
-  console.log(`🚀 Server running on port ${PORT}`)
-);
+// =====================
+// SERVER START
+// =====================
+app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
