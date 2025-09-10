@@ -1,0 +1,243 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #fafafa;
+}
+
+/* Tag bar */
+.tag-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 10px;
+    background: #fff;
+    border-bottom: 1px solid #ddd;
+    
+    z-index: 10;
+}
+
+.tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    flex: 1;
+    /* pushes clear button to right */
+}
+
+.tag {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 16px;
+    font-weight: 500;
+    color: white;
+    cursor: pointer;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.tag:hover {
+    transform: scale(1.05);
+    opacity: 0.9;
+}
+
+/* Different tag colors cycling */
+.tag:nth-child(1n) {
+    background: #ff6b6b;
+}
+
+/* red */
+.tag:nth-child(2n) {
+    background: #4dabf7;
+}
+
+/* blue */
+.tag:nth-child(3n) {
+    background: #51cf66;
+}
+
+/* green */
+.tag:nth-child(4n) {
+    background: #f59f00;
+}
+
+/* orange */
+.tag:nth-child(5n) {
+    background: #845ef7;
+}
+
+/* purple */
+.tag:nth-child(6n) {
+    background: #ff922b;
+}
+
+/* amber */
+
+.tag.active {
+    outline: 2px solid #222;
+    outline-offset: 2px;
+}
+
+/* Clear button */
+.tag.clear {
+    margin-left: auto;
+    background: #ff4757;
+    color: white;
+    border: none;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 16px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.tag.clear:hover {
+    background: #e84118;
+}
+
+/* Grid layout */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+    padding: 16px;
+}
+
+/* Card */
+.card {
+    background: white;
+    border-radius: 8px;
+    
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    top: 90px;
+}
+
+.card-img {
+    width: 100%;
+        height: auto;
+        object-fit: cover;
+        /* no cropping */
+        display: block;
+}
+
+.card-body {
+    padding: 12px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.card-body h3 {
+    margin: 0 0 6px;
+}
+
+.card-body p {
+    font-size: 14px;
+    color: #555;
+}
+
+.card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: auto;
+}
+
+.tags {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.tag.small {
+    background: #1159b07b;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+}
+
+.like-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: #444;
+    transition: color 0.2s ease;
+}
+
+.like-btn:hover {
+    color: #0073e6;
+}
+
+/* Featured article */
+.featured-card {
+    grid-column: 1 / -1;
+    padding: 20px;
+    font-size: 1.1rem;
+    background: #f0f8ff;
+}
+.tag-bar {
+    
+    /* 👈 adjust based on navbar height */
+    z-index: 99;
+    /* just under navbar */
+}
+.featured-card .card-img {
+    width: 100%;
+    height: auto;        /* scale naturally */
+    max-height: none;    /* don’t cap height */
+    object-fit: cover; /* full image visible */
+}
+/* ===== Common Card ===== */
+.card {
+  background: white;
+  border-radius: 8px;
+  overflow: hidden; /* keeps rounded corners for normal cards */
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* normal news images → cropped thumbnails */
+.card-img {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  display: block;
+}
+
+/* ===== Featured Card ===== */
+.featured-card {
+  grid-column: 1 / -1;  /* span full grid width */
+  background: #f0f8ff;
+  border-radius: 8px;
+  overflow: visible;    /* allow image to size naturally */
+  box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+}
+
+/* featured image → full image visible */
+.featured-card .card-img {
+  width: 100%;
+  height: auto;          /* keep natural proportions */
+  object-fit: cover;   /* ensures full image is visible */
+  max-height: 600px;     /* optional: control how tall it gets */
+  display: block;
+  border-radius: 8px 8px 0 0; /* round only top corners */
+  background: #fff;      /* fills behind if image has blank space */
+}
+
+/* featured body content */
+.featured-card .card-body {
+  padding: 20px;
+  background: #f0f8ff;
+}
+.featured-card {
+    grid-column: 1 / -1;
+    background: #f0f8ff;
+    border-radius: 8px;
+    margin-top: -10px;
+    /* navbar (85px) + tag-bar (60px) */
+    overflow: visible;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
