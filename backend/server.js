@@ -6,19 +6,28 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const path = require("path");
 const nodemailer = require("nodemailer");
+
 const User = require("./models/User");
 const News = require("./models/News");
 
-// ✅ Import routes
-const postsRouter = require("./routes/posts");
+// ✅ Load .env in local dev
+require("dotenv").config();
 
 const app = express();
 app.use(express.json());
-app.use(cors());
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+// ✅ CORS (allow frontend URL or * for testing)
+const CLIENT_URL = process.env.CLIENT_URL || "*";
+app.use(cors({
+  origin: CLIENT_URL,
+  credentials: true,
+}));
 
-// ✅ MongoDB connection
+/* =====================
+   DATABASE CONNECTION
+   ===================== */
 mongoose
-  .connect("mongodb://127.0.0.1:27017/mindcare", {
+  .connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
@@ -50,7 +59,11 @@ app.post("/MindCare/login", async (req, res) => {
     const validPass = await bcrypt.compare(password, user.password);
     if (!validPass) return res.status(400).json({ msg: "Invalid password" });
 
-    const token = jwt.sign({ username }, "secretkey", { expiresIn: "1h" });
+    const token = jwt.sign(
+      { username },
+      process.env.JWT_SECRET || "fallbacksecret",
+      { expiresIn: "1h" }
+    );
     res.json({ msg: "Login successful", token });
   } catch (error) {
     console.error("Error:", error);
@@ -98,10 +111,12 @@ app.post("/api/news/:id/like", async (req, res) => {
 /* =====================
    POST ROUTES (Discussion Forum)
    ===================== */
+const postsRouter = require("./routes/posts");
 app.use("/api/posts", postsRouter);
 
-// Serve uploaded files if needed
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+/* =====================
+   FEEDBACK ROUTE
+   ===================== */
 app.post("/api/feedback", async (req, res) => {
   const { feedback } = req.body;
 
@@ -114,34 +129,31 @@ app.post("/api/feedback", async (req, res) => {
     let transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: "braindockigdtuw@gmail.com",
-        pass: "fayp ktyf frqk nlye", // app password
-      },
-      tls: {
-        rejectUnauthorized: false, // ignore self-signed certs
+        user: process.env.MAIL_USER,      // from env
+        pass: process.env.MAIL_PASS,      // from env (App Password)
       },
     });
 
-    // Email options
     let mailOptions = {
-      from: "braindockigdtuw@gmail.com",
-      to: "braindockigdtuw@gmail.com",
+      from: process.env.MAIL_USER,
+      to: process.env.MAIL_USER,
       subject: "📩 New Feedback Received",
       text: feedback,
     };
 
-    // Send email
     await transporter.sendMail(mailOptions);
 
     res.json({ msg: "Feedback sent successfully!" });
   } catch (error) {
-  console.error("❌ Error sending email:", error.message);
-  res.status(500).json({ msg: "Failed to send feedback", error: error.message });
-}
+    console.error("❌ Error sending email:", error.message);
+    res.status(500).json({ msg: "Failed to send feedback", error: error.message });
+  }
 });
+
 /* =====================
    SERVER START
    ===================== */
-app.listen(5000, () =>
-  console.log("🚀 Server running on http://localhost:5000")
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () =>
+  console.log(`🚀 Server running on port ${PORT}`)
 );
