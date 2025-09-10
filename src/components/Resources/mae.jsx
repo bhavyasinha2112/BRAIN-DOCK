@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import eceBanner from "../../assets/mecBanner.png"; // <-- new ECE banner
+import eceBanner from "../../assets/mecbanner.png"; // <-- new ECE banner
 
 const eceData = {
   Semester1: {
