@@ -9,7 +9,7 @@ const About = () => {
     e.preventDefault();
     if (feedback.trim()) {
       try {
-        const response = await fetch("http://localhost:5000/api/feedback", {
+        const response = await fetch("https://brain-dock-backend.onrender.com/api/feedback", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ feedback }),

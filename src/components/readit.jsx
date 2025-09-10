@@ -9,7 +9,7 @@ const Readit = () => {
 
   // Fetch posts on load
   useEffect(() => {
-    fetch("http://localhost:5000/api/posts")
+    fetch("https://brain-dock-backend.onrender.com/api/posts")
       .then((res) => res.json())
       .then((data) => setPosts(data))
       .catch((err) => console.error("Error fetching posts:", err));
@@ -32,7 +32,7 @@ const Readit = () => {
       formData.append("author", "Guest");
       if (newPost.imageFile) formData.append("image", newPost.imageFile);
 
-      const res = await fetch("http://localhost:5000/api/posts", { method: "POST", body: formData });
+      const res = await fetch("https://brain-dock-backend.onrender.com/api/posts", { method: "POST", body: formData });
       const savedPost = await res.json();
       setPosts([savedPost, ...posts]);
       setNewPost({ title: "", body: "", imageFile: null, preview: null });
@@ -47,7 +47,7 @@ const Readit = () => {
     if (!newComment.trim() || !selectedPost) return;
 
     try {
-      const res = await fetch(`http://localhost:5000/api/posts/${selectedPost._id}/comment`, {
+      const res = await fetch(`https://brain-dock-backend.onrender.com/api/posts/${selectedPost._id}/comment`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ text: newComment, author: "Guest" }),
@@ -63,7 +63,7 @@ const Readit = () => {
 
   const handleVote = async (id, val) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/posts/${id}/vote`, {
+      const res = await fetch(`https://brain-dock-backend.onrender.com/api/posts/${id}/vote`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ val }),
@@ -99,7 +99,7 @@ const Readit = () => {
                   <p className="text-gray-700 mb-2">{post.body}</p>
                   {post.image && (
                     <img
-                      src={`http://localhost:5000${post.image}`}
+                      src={`https://brain-dock-backend.onrender.com${post.image}`}
                       alt="post"
                       className="w-full max-h-80 object-cover rounded-lg"
                     />
@@ -129,7 +129,7 @@ const Readit = () => {
             <p className="text-gray-700 mb-4">{selectedPost.body}</p>
             {selectedPost.image && (
               <img
-                src={`http://localhost:5000${selectedPost.image}`}
+                src={`https://brain-dock-backend.onrender.com${selectedPost.image}`}
                 alt="post"
                 className="w-full max-h-96 object-cover rounded-lg mb-4"
               />

@@ -10,7 +10,7 @@ function NewsApp() {
 
   // Fetch news
   useEffect(() => {
-    fetch("http://localhost:5000/api/news")
+    fetch("https://brain-dock-backend.onrender.com/api/news")
       .then((res) => res.json())
       .then((data) => setNews(data));
   }, []);
@@ -29,7 +29,7 @@ function NewsApp() {
       prev.map((n) => (n._id === id ? { ...n, likes: n.likes + 1 } : n))
     );
 
-    await fetch(`http://localhost:5000/api/news/${id}/like`, {
+    await fetch(`https://brain-dock-backend.onrender.com/api/news/${id}/like`, {
       method: "POST",
     });
   };
